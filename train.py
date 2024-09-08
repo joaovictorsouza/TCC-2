@@ -38,7 +38,7 @@ def eval(model, f, ids2tokens, idx2phr):
     Y, Y_hat = [], []
     with torch.no_grad():
         x, y  = get_batch(hp.max_span, hp.batch_size, hp.n_classes, False)
-        x = x.mps()
+        x = x.cuda()
 
         _, y_hat, _ = model(x)  # y_hat: (N, n_candidates)
 
