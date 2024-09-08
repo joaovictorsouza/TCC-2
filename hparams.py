@@ -22,7 +22,7 @@ class Hparams:
     idx2phr = "data/idx2phr.pkl"
 
     # train
-    batch_size = 32  # 8 GPUs
+    batch_size = 128  # 8 GPUs
     lr = 2e-5
     logdir = 'log'
     vocab_size = 28996
