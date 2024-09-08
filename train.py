@@ -15,8 +15,8 @@ def train_and_eval(model, optimizer, criterion, ids2tokens, idx2phr):
     model.train()
     for step in tqdm(range(hp.n_train_steps+1)):
         x, y = get_batch(hp.max_span, hp.batch_size, hp.n_classes, True)
-        x = torch.from_numpy(x).cuda()
-        y = torch.from_numpy(y).cuda()
+        x = x.cuda()
+        y = y.cuda()
 
         optimizer.zero_grad()
 

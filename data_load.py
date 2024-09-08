@@ -43,7 +43,7 @@ def get_batch(max_span, batch_size, n_classes, train=True):
 
     # Padding e conversão para NumPy arrays
     x = pad(x, maxlen)
-    x = np.array(x, dtype=np.int32)  # Usamos NumPy em vez de torch
-    y = np.array(y, dtype=np.int32)
+    x = np.array(x, dtype=np.int64)  # Usamos NumPy em vez de torch
+    y = np.array(y, dtype=np.int64)
     
     return x, y
