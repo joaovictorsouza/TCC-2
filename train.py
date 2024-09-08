@@ -15,8 +15,8 @@ def train_and_eval(model, optimizer, criterion, ids2tokens, idx2phr):
     model.train()
     for step in tqdm(range(hp.n_train_steps+1)):
         x, y = get_batch(hp.max_span, hp.batch_size, hp.n_classes, True)
-        x = torch.from_numpy(x).to('mps')
-        y = torch.from_numpy(y).to('mps')
+        x = x.cuda()
+        y = x.cuida()
 
         optimizer.zero_grad()
 
@@ -38,7 +38,7 @@ def eval(model, f, ids2tokens, idx2phr):
     Y, Y_hat = [], []
     with torch.no_grad():
         x, y  = get_batch(hp.max_span, hp.batch_size, hp.n_classes, False)
-        x = x.mps()
+        x = x.cuda()
 
         _, y_hat, _ = model(x)  # y_hat: (N, n_candidates)
 
@@ -86,7 +86,7 @@ if __name__=="__main__":
     print("==== Load dictionaries")
     idx2phr = pickle.load(open(hp.idx2phr, 'rb'))
 
-    device = torch.device('mps')
+    device = torch.device('cuda')
 
     print("==== Building model")
     model = Net(hp.n_classes)
