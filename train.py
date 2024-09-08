@@ -86,7 +86,7 @@ if __name__=="__main__":
     print("==== Load dictionaries")
     idx2phr = pickle.load(open(hp.idx2phr, 'rb'))
 
-    device = torch.device('mps')
+    device = torch.device('cuda')
 
     print("==== Building model")
     model = Net(hp.n_classes)
