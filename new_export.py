@@ -74,7 +74,7 @@ if __name__ == "__main__":
     dummy_input = [tokens_tensor, segments_tensors]
 
     _token_dim = Dim('_token_dim', min=1, max=64)  # Define o intervalo dinâmico como múltiplo de 8
-    dim_batch = Dim("batch_dim", min=1, max=1)
+    dim_batch = 1
 
     # Garante que token_dim é múltiplo de 8
     dynamic_shapes = {
