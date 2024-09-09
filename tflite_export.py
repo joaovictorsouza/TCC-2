@@ -13,6 +13,7 @@ from transformers import BertTokenizer  # Or BertTokenizer
 from transformers import BertForPreTraining
 from torch.export import Dim
 import ai_edge_torch
+import torch_xla.core.xla_model as xm
 
 
 
@@ -32,15 +33,29 @@ if __name__ == "__main__":
     print("Wait... loading model")
     ckpt = args.ckpt
 
-    model = Net(hp.n_classes)
-    model = model
-    device = torch.device('xla')
 
-    ckpt = torch.load(ckpt, map_location=device)
+    # Definir o dispositivo XLA
+    device = xm.xla_device()
 
-    # ckpt = OrderedDict([(k.replace("module.", "").replace("LayerNorm.weight", "LayerNorm.gamma").replace("LayerNorm.bias", "LayerNorm.beta"), v) for k, v in ckpt.items()])
-    ckpt = OrderedDict([(k.replace("module.", ""), v) for k, v in ckpt.items()])
-    model.load_state_dict(ckpt)
+    # Carregar o checkpoint e mapear os dados para o dispositivo XLA
+    ckpt = torch.load(ckpt, map_location=torch.device('cpu'))
+
+    # Se o modelo tiver sido salvo com múltiplas GPUs (DataParallel), ajuste as chaves do estado
+    # Isso remove o prefixo "module." se o modelo foi treinado com DataParallel
+    new_state_dict = {}
+    for key, value in ckpt.items():
+        new_key = key.replace('module.', '')  # Ajuste se necessário
+        new_state_dict[new_key] = value
+
+    # Carregar o estado do modelo no dispositivo XLA
+    model = Net()  # Substitua pelo seu modelo
+    model.load_state_dict(new_state_dict)
+
+    # Enviar o modelo para o dispositivo XLA
+    model.to(device)
+
+
+
 
     idx2phr = pickle.load(open(hp.idx2phr, 'rb'))
 
