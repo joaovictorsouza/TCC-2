@@ -48,7 +48,7 @@ if __name__ == "__main__":
         new_state_dict[new_key] = value
 
     # Carregar o estado do modelo no dispositivo XLA
-    model = Net()  # Substitua pelo seu modelo
+    model = Net(hp.n_classes)  # Substitua pelo seu modelo
     model.load_state_dict(new_state_dict)
 
     # Enviar o modelo para o dispositivo XLA
