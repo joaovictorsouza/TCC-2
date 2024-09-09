@@ -37,13 +37,13 @@ if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained('adalbertojunior/distilbert-portuguese-cased', do_lower_case=True)
     bert = BertForPreTraining.from_pretrained('neuralmind/bert-base-portuguese-cased')
 
-    example_inputs = prepare_inputs("Você pode me ajudar?", tokenizer)
+    example_inputs = torch.randint(0, 30522, (1, 512))
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
     dynamic_shape = ({1: torch.export.Dim("token_dim", max=bert.config.max_position_embeddings)},)
 
     # Substitua o antigo capture_pre_autograd_graph por torch.export
     # m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
-    m = torch.jit.trace(model, example_inputs, dynamic_shape=dynamic_shape)
+    m = torch.jit.script(model, example_inputs)
 
     # Salvar o modelo exportado
     torch.save(m, "model_exported.pt")
