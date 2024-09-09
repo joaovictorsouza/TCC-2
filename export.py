@@ -42,7 +42,8 @@ if __name__ == "__main__":
     dynamic_shape = ({1: torch.export.Dim("token_dim", max=bert.config.max_position_embeddings)},)
 
     # Substitua o antigo capture_pre_autograd_graph por torch.export
-    m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
+    # m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
+    m = torch.jit.trace(model, example_inputs, dynamic_shape=dynamic_shape)
 
     # Salvar o modelo exportado
     torch.save(m, "model_exported.pt")
