@@ -10,6 +10,8 @@ from torch.nn.attention import sdpa_kernel, SDPBackend
 from torch._export import capture_pre_autograd_graph
 from torch.export import export
 from transformers import BertTokenizer  # Or BertTokenizer
+from transformers import BertForPreTraining
+
 
 
 if __name__ == "__main__":
@@ -33,21 +35,14 @@ if __name__ == "__main__":
     idx2phr = pickle.load(open(hp.idx2phr, 'rb'))
 
     tokenizer = BertTokenizer.from_pretrained('adalbertojunior/distilbert-portuguese-cased', do_lower_case=True)
+    bert = BertForPreTraining.from_pretrained('neuralmind/bert-base-portuguese-cased')
 
     example_inputs = prepare_inputs("Você pode me ajudar?", tokenizer)
+    # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
+    dynamic_shape = ({1: torch.export.Dim("token_dim", max=model.config.max_position_embeddings)},)
 
-    dynamic_shape = (
-    {1: torch.export.Dim("token_dim", max=512)},
-    )
+    # Substitua o antigo capture_pre_autograd_graph por torch.export
+    m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
 
-    with torch.nn.attention.sdpa_kernel([SDPBackend.MATH]), torch.no_grad():
-        m = capture_pre_autograd_graph(model, example_inputs, dynamic_shapes=dynamic_shape)
-        traced_model = export(m, example_inputs, dynamic_shapes=dynamic_shape)
-
-    edge_config = EdgeCompileConfig(_check_ir_validity=False)
-    edge_manager = to_edge(traced_model,  compile_config=edge_config)
-    et_program = edge_manager.to_executorch()
-
-    # Save the ExecuTorch program to a file.
-    with open("tcc2.pte", "wb") as file:
-        file.write(et_program.buffer)
+    # Salvar o modelo exportado
+    torch.save(m, "model_exported.pt")
