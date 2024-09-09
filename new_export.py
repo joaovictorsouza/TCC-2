@@ -16,6 +16,11 @@ from torch.export import Dim
 
 TORCH_LOGS="+dynamic"
 
+def adjust_to_multiple_of_8(tokens):
+    while len(tokens) % 8 != 0:
+        tokens.append(0)  # Adiciona padding (ou outro token adequado)
+    return tokens
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--ckpt", type=str, required=True,
@@ -60,14 +65,15 @@ if __name__ == "__main__":
     masked_index = 8
     tokenized_text[masked_index] = '[MASK]'
     indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
-    segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+    indexed_tokens = adjust_to_multiple_of_8(indexed_tokens)
+    segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     # Creating a dummy input
     tokens_tensor = torch.tensor([indexed_tokens[:512]]).cuda()
     segments_tensors = torch.tensor([segments_ids[:512]]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
 
-    dim_batch = Dim("batch_dim", min=1)  # o batch pode ter tamanho dinâmico
+    dim_batch = Dim("batch_dim", min=1, max=1000)  # o batch pode ter tamanho dinâmico
     dim_tokens = Dim("token_dim", min=1, max=512)  # os tokens têm um limite máximo de 512
 
     dynamic_shapes = {
