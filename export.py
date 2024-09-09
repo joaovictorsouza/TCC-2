@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     example_inputs = (
         prepare_inputs("O", tokenizer),
-        prepare_inputs("Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. E a")
+        prepare_inputs("Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. E a", tokenizer)
         )
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
     dynamic_shape = ({1: torch.export.Dim("token_dim", max=bert.config.max_position_embeddings)},)
@@ -49,4 +49,7 @@ if __name__ == "__main__":
     m = torch.jit.script(model, example_inputs)
 
     # Salvar o modelo exportado
+    torch.save(m, "model_scripted.pt")
+
+    m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
     torch.save(m, "model_exported.pt")
