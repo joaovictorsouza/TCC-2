@@ -34,8 +34,9 @@ if __name__ == "__main__":
 
     model = Net(hp.n_classes)
     model = model
-    ckpt = torch.load(ckpt)
-    # model.load_state_dict(ckpt)
+    device = torch.device('xna')
+
+    ckpt = torch.load(ckpt, map_location=device, weights_only=True))
 
     # ckpt = OrderedDict([(k.replace("module.", "").replace("LayerNorm.weight", "LayerNorm.gamma").replace("LayerNorm.bias", "LayerNorm.beta"), v) for k, v in ckpt.items()])
     ckpt = OrderedDict([(k.replace("module.", ""), v) for k, v in ckpt.items()])
