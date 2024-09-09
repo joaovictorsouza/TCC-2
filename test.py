@@ -15,8 +15,6 @@ def prepare_inputs(context, tokenizer):
     tokens = tokenizer.tokenize(context)
     tokens = tokenizer.convert_tokens_to_ids(tokens)[-hp.max_span+2:]
     tokens = [101] + tokens + [102]
-    if len(tokens['input_ids']) % 8 != 0:
-        tokens['input_ids'] += [tokenizer.pad_token_id] * (8 - len(tokens['input_ids']) % 8)
     # print(f"{Fore.LIGHTBLACK_EX}context:{tokenizer.convert_ids_to_tokens(tokens)}{Style.RESET_ALL}")
     tokens = torch.LongTensor(tokens)
     tokens = tokens.unsqueeze(0) # (1, T)

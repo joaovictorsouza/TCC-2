@@ -38,6 +38,8 @@ if __name__ == "__main__":
     bert = BertForPreTraining.from_pretrained('neuralmind/bert-base-portuguese-cased')
 
     example_inputs = prepare_inputs("Oi tudo bem?", tokenizer),
+    print(example_inputs)
+
         
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
     dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
