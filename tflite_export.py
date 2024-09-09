@@ -33,7 +33,7 @@ if __name__ == "__main__":
     ckpt = args.ckpt
 
     model = Net(hp.n_classes)
-    model = model.to("mps")
+    model = model.cuda()
     ckpt = torch.load(ckpt)
     # model.load_state_dict(ckpt)
 
