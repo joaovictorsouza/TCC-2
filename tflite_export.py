@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     model = Net(hp.n_classes)
     model = model
-    device = torch.device('xna')
+    device = torch.device('xla')
 
     ckpt = torch.load(ckpt, map_location=device, weights_only=True)
 
