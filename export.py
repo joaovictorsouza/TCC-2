@@ -61,12 +61,12 @@ if __name__ == "__main__":
     segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
 
     # Creating a dummy input
-    tokens_tensor = torch.tensor([indexed_tokens])
-    segments_tensors = torch.tensor([segments_ids])
+    tokens_tensor = torch.tensor([indexed_tokens]).cuda()
+    segments_tensors = torch.tensor([segments_ids]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
     # Creating a dummy input
-    tokens_tensor = torch.tensor([indexed_tokens])
-    segments_tensors = torch.tensor([segments_ids])
+    tokens_tensor = torch.tensor([indexed_tokens]).cuda()
+    segments_tensors = torch.tensor([segments_ids]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
 
    # Creating the trace
