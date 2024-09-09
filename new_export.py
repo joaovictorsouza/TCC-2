@@ -69,5 +69,5 @@ if __name__ == "__main__":
 
     dim1_x = Dim("token_dim", min=1, max=10)
     dynamic_shapes = {"x": {1: dim1_x}, "y": {1: dim1_x}}   # Creating the trace
-    traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shape)
+    traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shapes)
     torch.export.save(traced_model, "exported_bert.pt")
