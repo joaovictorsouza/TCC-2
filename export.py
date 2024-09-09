@@ -40,7 +40,7 @@ if __name__ == "__main__":
     example_inputs = prepare_inputs("Oi tudo bem?", tokenizer),
         
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
-    dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=bert.config.max_position_embeddings)},)
+    dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
 
     # Substitua o antigo capture_pre_autograd_graph por torch.export
     # m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
