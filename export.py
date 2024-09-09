@@ -9,7 +9,8 @@ from executorch.exir import EdgeCompileConfig, to_edge
 from torch.nn.attention import sdpa_kernel, SDPBackend
 from torch._export import capture_pre_autograd_graph
 from torch.export import export
-import colorama
+from transformers import BertTokenizer  # Or BertTokenizer
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -31,7 +32,9 @@ if __name__ == "__main__":
 
     idx2phr = pickle.load(open(hp.idx2phr, 'rb'))
 
-    example_inputs = prepare_inputs("Você pode me ajudar?")
+    tokenizer = BertTokenizer.from_pretrained('adalbertojunior/distilbert-portuguese-cased', do_lower_case=True)
+
+    example_inputs = prepare_inputs("Você pode me ajudar?", tokenizer)
 
     dynamic_shape = (
     {1: torch.export.Dim("token_dim", max=model.config.block_size)},
