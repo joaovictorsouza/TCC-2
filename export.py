@@ -46,10 +46,10 @@ if __name__ == "__main__":
 
     # Substitua o antigo capture_pre_autograd_graph por torch.export
     # m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
-    m = torch.jit.script(model, example_inputs)
+    # m = torch.jit.script(model, example_inputs)
 
-    # Salvar o modelo exportado
-    torch.save(m, "model_scripted.pt")
+    # # Salvar o modelo exportado
+    # torch.save(m, "model_scripted.pt")
 
-    m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
-    torch.save(m, "model_exported.pt")
+    m = torch.export.export(model, example_inputs, dynamic_shapes=dynamic_shape)
+    torch.export.save(m, "model_exported.pt")
