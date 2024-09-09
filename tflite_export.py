@@ -33,7 +33,7 @@ if __name__ == "__main__":
     ckpt = args.ckpt
 
     model = Net(hp.n_classes)
-    model = model.cuda()
+    model = model
     ckpt = torch.load(ckpt)
     # model.load_state_dict(ckpt)
 
@@ -71,8 +71,8 @@ if __name__ == "__main__":
     segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     # Creating a dummy input
-    tokens_tensor = torch.tensor([indexed_tokens[:512]]).cuda()
-    segments_tensors = torch.tensor([segments_ids[:512]]).cuda()
+    tokens_tensor = torch.tensor([indexed_tokens[:512]])
+    segments_tensors = torch.tensor([segments_ids[:512]])
     dummy_input = (tokens_tensor, segments_tensors)
 
     # _token_dim = Dim('_token_dim', min=1, max=64)  # Define o intervalo dinâmico como múltiplo de 8
