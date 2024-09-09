@@ -37,7 +37,7 @@ if __name__ == "__main__":
     example_inputs = prepare_inputs("Você pode me ajudar?", tokenizer)
 
     dynamic_shape = (
-    {1: torch.export.Dim("token_dim", max=model.config.block_size)},
+    {1: torch.export.Dim("token_dim", max=512)},
     )
 
     with torch.nn.attention.sdpa_kernel([SDPBackend.MATH]), torch.no_grad():
