@@ -12,6 +12,8 @@ from torch.export import export
 from transformers import BertTokenizer  # Or BertTokenizer
 from transformers import BertForPreTraining
 from torch.export import Dim
+import ai_edge_torch
+
 
 
 TORCH_LOGS="+dynamic"
@@ -71,16 +73,19 @@ if __name__ == "__main__":
     # Creating a dummy input
     tokens_tensor = torch.tensor([indexed_tokens[:512]]).cuda()
     segments_tensors = torch.tensor([segments_ids[:512]]).cuda()
-    dummy_input = [tokens_tensor, segments_tensors]
+    dummy_input = (tokens_tensor, segments_tensors)
 
-    _token_dim = Dim('_token_dim', min=1, max=64)  # Define o intervalo dinâmico como múltiplo de 8
-    dim_batch = 1
+    # _token_dim = Dim('_token_dim', min=1, max=64)  # Define o intervalo dinâmico como múltiplo de 8
+    # dim_batch = 1
 
-    # Garante que token_dim é múltiplo de 8
-    dynamic_shapes = {
-        "x": {0: dim_batch, 1: 8 * _token_dim},       # token_dim como múltiplo de 8
-        "attention_mask": {0: dim_batch, 1: 8 * _token_dim}  # Mesmo ajuste para attention_mask
-    }
+    # # Garante que token_dim é múltiplo de 8
+    # dynamic_shapes = {
+    #     "x": {0: dim_batch, 1: 8 * _token_dim},       # token_dim como múltiplo de 8
+    #     "attention_mask": {0: dim_batch, 1: 8 * _token_dim}  # Mesmo ajuste para attention_mask
+    # }
     
-    traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shapes)
-    torch.export.save(traced_model, "exported_bert.pt")
+    # traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shapes)
+    edge_model = ai_edge_torch.convert(model.eval(), dummy_input)
+    edge_model.export('bert.tflite')
+
+    # torch.export.save(traced_model, "exported_bert.pt")
