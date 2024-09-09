@@ -37,12 +37,12 @@ if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained('adalbertojunior/distilbert-portuguese-cased', do_lower_case=True)
     bert = BertForPreTraining.from_pretrained('neuralmind/bert-base-portuguese-cased')
 
-    example_inputs = prepare_inputs("Oi tudo bem?", tokenizer),
-    print(example_inputs)
+    # example_inputs = prepare_inputs("Oi tudo bem?", tokenizer),
+    # print(example_inputs)
 
         
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
-    dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
+    # dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
 
     # Substitua o antigo capture_pre_autograd_graph por torch.export
     # m = torch.export(model, example_inputs, dynamic_shapes=dynamic_shape)
@@ -50,6 +50,25 @@ if __name__ == "__main__":
 
     # # Salvar o modelo exportado
     # torch.save(m, "model_scripted.pt")
+    # Tokenizing input text
+    text = "[CLS] Quem é você ? [SEP] Não gosto do seu jeito [SEP]"
+    tokenized_text = tokenizer.tokenize(text)
 
-    m = torch.export.export(model, example_inputs, dynamic_shapes=dynamic_shape)
-    torch.export.save(m, "model_exported.pt")
+    # Masking one of the input tokens
+    masked_index = 8
+    tokenized_text[masked_index] = '[MASK]'
+    indexed_tokens = tokenizer.convert_tokens_to_ids(tokenized_text)
+    segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+
+    # Creating a dummy input
+    tokens_tensor = torch.tensor([indexed_tokens])
+    segments_tensors = torch.tensor([segments_ids])
+    dummy_input = [tokens_tensor, segments_tensors]
+    # Creating a dummy input
+    tokens_tensor = torch.tensor([indexed_tokens])
+    segments_tensors = torch.tensor([segments_ids])
+    dummy_input = [tokens_tensor, segments_tensors]
+
+   # Creating the trace
+    traced_model = torch.jit.trace(model, [tokens_tensor, segments_tensors])
+    torch.jit.save(traced_model, "traced_bert.pt")

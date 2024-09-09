@@ -17,12 +17,6 @@ def prepare_inputs(context, tokenizer):
     tokens = [101] + tokens + [102]
     # print(f"{Fore.LIGHTBLACK_EX}context:{tokenizer.convert_ids_to_tokens(tokens)}{Style.RESET_ALL}")
     tokens = torch.LongTensor(tokens)
-    
-    if tokens.size(0) % 8 != 0:
-        pad_size = 8 - (tokens.size(0) % 8)
-        padding = torch.full((pad_size,), tokenizer.pad_token_id, dtype=torch.long)  # Cria padding
-        tokens = torch.cat([tokens, padding], dim=0)  # Adiciona padding ao final
-    
     tokens = tokens.unsqueeze(0) # (1, T)
     tokens = tokens.to("cuda")
     return tokens
