@@ -71,7 +71,7 @@ if __name__ == "__main__":
     dim_tokens = Dim("token_dim", min=1, max=512)  # os tokens têm um limite máximo de 512
 
     dynamic_shapes = {
-        "input_ids": {0: dim_batch, 1: dim_tokens},       # (N, T)
+        "x": {0: dim_batch, 1: dim_tokens},       # (N, T)
         "attention_mask": {0: dim_batch, 1: dim_tokens}   # (N, T)
     }
 
