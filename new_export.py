@@ -64,11 +64,8 @@ if __name__ == "__main__":
     tokens_tensor = torch.tensor([indexed_tokens]).cuda()
     segments_tensors = torch.tensor([segments_ids]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
-    # Creating a dummy input
-    tokens_tensor = torch.tensor([indexed_tokens]).cuda()
-    segments_tensors = torch.tensor([segments_ids]).cuda()
-    dummy_input = [tokens_tensor, segments_tensors]
 
+    dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
    # Creating the trace
-    traced_model = torch.export.export(model, [tokens_tensor, segments_tensors])
+    traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shape)
     torch.export.save(traced_model, "exported_bert.pt")
