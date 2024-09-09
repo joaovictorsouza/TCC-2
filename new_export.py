@@ -73,13 +73,14 @@ if __name__ == "__main__":
     segments_tensors = torch.tensor([segments_ids[:512]]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
 
-    dim_batch = Dim("batch_dim", min=1, max=1000)  # o batch pode ter tamanho dinâmico
-    dim_tokens = Dim("token_dim", min=1, max=512)  # os tokens têm um limite máximo de 512
+    _token_dim = Dim('_token_dim', min=1, max=64)  # Define o intervalo dinâmico como múltiplo de 8
+    dim_batch = Dim("batch_dim", min=1, max=1000)  # Batch dinâmico
 
+    # Garante que token_dim é múltiplo de 8
     dynamic_shapes = {
-        "x": {0: dim_batch, 1: dim_tokens},       # (N, T)
-        "attention_mask": {0: dim_batch, 1: dim_tokens}   # (N, T)
+        "x": {0: dim_batch, 1: 8 * _token_dim},       # token_dim como múltiplo de 8
+        "attention_mask": {0: dim_batch, 1: 8 * _token_dim}  # Mesmo ajuste para attention_mask
     }
-
+    
     traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shapes)
     torch.export.save(traced_model, "exported_bert.pt")
