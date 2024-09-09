@@ -63,8 +63,8 @@ if __name__ == "__main__":
     segments_ids = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
 
     # Creating a dummy input
-    tokens_tensor = torch.tensor([indexed_tokens]).cuda()
-    segments_tensors = torch.tensor([segments_ids]).cuda()
+    tokens_tensor = torch.tensor([indexed_tokens[:512]]).cuda()
+    segments_tensors = torch.tensor([segments_ids[:512]]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
 
     dim_batch = Dim("batch_dim", min=1)  # o batch pode ter tamanho dinâmico
