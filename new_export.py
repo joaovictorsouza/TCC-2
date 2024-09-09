@@ -11,6 +11,8 @@ from torch._export import capture_pre_autograd_graph
 from torch.export import export
 from transformers import BertTokenizer  # Or BertTokenizer
 from transformers import BertForPreTraining
+from torch.export import Dim
+
 
 TORCH_LOGS="+dynamic"
 
@@ -65,7 +67,7 @@ if __name__ == "__main__":
     segments_tensors = torch.tensor([segments_ids]).cuda()
     dummy_input = [tokens_tensor, segments_tensors]
 
-    dynamic_shape = ({1: torch.export.Dim("token_dim", min=1, max=512)},)
-   # Creating the trace
+    dim1_x = Dim("token_dim", min=1, max=10)
+    dynamic_shapes = {"x": {1: dim1_x}, "y": {1: dim1_x}}   # Creating the trace
     traced_model = torch.export.export(model, (tokens_tensor, segments_tensors), dynamic_shapes=dynamic_shape)
     torch.export.save(traced_model, "exported_bert.pt")
