@@ -70,5 +70,5 @@ if __name__ == "__main__":
     dummy_input = [tokens_tensor, segments_tensors]
 
    # Creating the trace
-    traced_model = torch.jit.trace(model, [tokens_tensor, segments_tensors])
-    torch.jit.save(traced_model, "exported_bert.pt")
+    traced_model = torch.export.export(model, [tokens_tensor, segments_tensors])
+    torch.export.save(traced_model, "exported_bert.pt")
