@@ -36,7 +36,7 @@ if __name__ == "__main__":
     model = model
     device = torch.device('xla')
 
-    ckpt = torch.load(ckpt, map_location=device, weights_only=True)
+    ckpt = torch.load(ckpt, map_location=device)
 
     # ckpt = OrderedDict([(k.replace("module.", "").replace("LayerNorm.weight", "LayerNorm.gamma").replace("LayerNorm.bias", "LayerNorm.beta"), v) for k, v in ckpt.items()])
     ckpt = OrderedDict([(k.replace("module.", ""), v) for k, v in ckpt.items()])
