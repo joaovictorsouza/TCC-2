@@ -37,7 +37,10 @@ if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained('adalbertojunior/distilbert-portuguese-cased', do_lower_case=True)
     bert = BertForPreTraining.from_pretrained('neuralmind/bert-base-portuguese-cased')
 
-    example_inputs = torch.randint(0, 30522, (1, 512))
+    example_inputs = (
+        prepare_inputs("O", tokenizer),
+        prepare_inputs("Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. Gostaria que o braisl tivesse mais opções que essas aqui. Como vou saber se estou? Meu nome é maria do rosário pereira e eu tenho dezeoito anos. E a")
+        )
     # Definir as dimensões dinâmicas (corrigir a dimensão correta com base na forma do tensor)
     dynamic_shape = ({1: torch.export.Dim("token_dim", max=bert.config.max_position_embeddings)},)
 
